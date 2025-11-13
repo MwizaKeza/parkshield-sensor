@@ -12,6 +12,7 @@ import datetime
 from collections import deque
 import uuid
 import shutil
+import tflite_runtime.interpreter as tflite
 
 app = FastAPI()
 
