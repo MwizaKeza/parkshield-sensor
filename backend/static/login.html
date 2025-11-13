@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParkShield | Login</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background-color: #2f4631;
+      background-image: url('data:image/svg+xml,%3Csvg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M60 0L0 60l60 60 60-60L60 0zM60 20l40 40-40 40-40-40 40-40z" fill="%23394e39" fill-opacity="0.4"/%3E%3C/svg%3E');
+      color: #fff;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .left h1 {
+      font-size:3rem;
+      margin-right:6rem;
+      margin-bottom:3rem;
+      font-family: 'Georgia', serif;
+      font-weight: 300;
+     letter-spacing: 1px;
+     color: #f5f5f5; 
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+      max-width: 350px;
+      gap: 1rem;
+    }
+
+    label {
+      font-size: 0.9rem;
+      margin-bottom: 0.2rem;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 4px;
+      background-color: #e8f1a5;
+      color: #000;
+      font-size: 0.95rem;
+    }
+
+    input::placeholder {
+      color: #777;
+    }
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .options a {
+      color: #fff;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .options a:hover {
+      text-decoration: underline;
+    }
+
+    button {
+      padding: 0.8rem;
+      background-color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #e8f1a5;
+    }
+
+    .right {
+      flex: 1;
+      height: 100%;
+      background: url("assets/loginimg.jpg") no-repeat center center/cover;
+      clip-path: ellipse(75% 100% at 100% 50%);
+    }
+
+    @media (max-width: 900px) {
+      .right {
+        display: none;
+      }
+      .left {
+        width: 100%;
+      }
+      form {
+        width: 80%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <h1>ParkShield.</h1>
+      <form action="dashboard.html" method="GET">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required />
+
+        <div class="options">
+          <label><input type="checkbox" /> Remember Me</label>
+          <a href="#">Forgot Password?</a>
+        </div>
+
+        <button type="submit">Sign in</button>
+      </form>
+    </div>
+
+    <div class="right"></div>
+  </div>
+</body>
+</html>

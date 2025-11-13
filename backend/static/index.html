@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ParkShield Demo Sensor</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      video {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      button {
+        margin-top: 15px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        background-color: #263f20;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      button:hover {
+        background-color: #1b3d1d;
+      }
+
+      p#result {
+        margin-top: 15px;
+        font-size: 1rem;
+        text-align: center;
+        word-wrap: break-word;
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 15px;
+        }
+
+        button {
+          width: 100%;
+          font-size: 1.1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h2>ParkShield Demo Sensor</h2>
+    <video id="video" autoplay playsinline muted width="300"></video>
+    <br>
+    <button id="captureBtn">Capture</button>
+    <p id="result"></p>
+
+    <script>
+      const video = document.getElementById('video');
+      const captureBtn = document.getElementById('captureBtn');
+      const result = document.getElementById('result');
+
+      const BACKEND_URL = "http://localhost:8000/api/detect";
+
+      // Start camera stream
+      navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      })
+      .then(stream => { video.srcObject = stream; })
+      .catch(err => { alert("Error accessing camera: " + err); });
+
+      captureBtn.addEventListener('click', async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg'));
+        const formData = new FormData();
+        formData.append('image', blob, 'frame.jpg');
+        formData.append('camera_id', 'demo_camera_1');
+        formData.append('timestamp', new Date().toISOString());
+
+        result.textContent = "Capturing location...";
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(async pos => {
+            formData.append('latitude', pos.coords.latitude);
+            formData.append('longitude', pos.coords.longitude);
+            await sendImage(formData);
+          }, async () => {
+            await sendImage(formData); // continue if location fails
+          });
+        } else {
+          await sendImage(formData);
+        }
+      });
+
+      async function sendImage(formData) {
+        result.textContent = "Sending image for analysis...";
+        try {
+          const res = await fetch(BACKEND_URL, { method: 'POST', body: formData });
+          const data = await res.json();
+          result.textContent = `${data.prediction} (${(data.confidence * 100).toFixed(1)}%)`;
+        } catch (err) {
+          result.textContent = "Error sending image: " + err;
+        }
+      }
+    </script>
+  </body>
+</html>
+
+
+

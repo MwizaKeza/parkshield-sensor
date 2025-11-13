@@ -1,0 +1,9 @@
+antelope
+baboon
+buffalo
+elephant
+giraffe
+hippopotamus
+human
+leopard
+lion

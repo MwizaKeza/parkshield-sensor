@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParkShield Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #f7f8f5;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      border-bottom: 1px solid #ddd;
+      background-color: #fff;
+    }
+
+    .logo {
+      font-family: 'Georgia', serif;
+      font-size: 1.6rem;
+      color: #2d3b24;
+    }
+
+    nav {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    nav a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #2d3b24;
+      position: relative;
+    }
+
+    nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #7d8f5e;
+    }
+
+    .profile-pic {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 2fr 3fr;
+      gap: 25px;
+      padding: 30px 40px;
+    }
+
+    /* Left Panel */
+    .left-section {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 15px;
+    }
+
+    .stat-card {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .stat-title {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-weight: bold;
+      font-size: 1.3rem;
+      color: #2d3b24;
+    }
+
+    .incoming {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .incoming h3 {
+      margin-bottom: 15px;
+      color: #2d3b24;
+    }
+
+    .alert-card {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 8px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .alert-card:hover {
+      background: #f0f4ef;
+    }
+
+    .alert-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-right: 12px;
+    }
+
+    .alert-info {
+      flex: 1;
+    }
+
+    .alert-info h4 {
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }
+
+    .alert-info p {
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .status-badge {
+      background-color: #f7f3e5;
+      color: #8c7a38;
+      padding: 3px 8px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      margin-left: 5px;
+    }
+
+    .alert-actions button {
+      border: none;
+      border-radius: 6px;
+      padding: 5px 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-left: 5px;
+    }
+
+    .approve-btn {
+      background-color: #4c6b37;
+      color: white;
+    }
+
+    .reject-btn {
+      background-color: #d9534f;
+      color: white;
+    }
+
+    /* Right Panel */
+    .right-section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      min-height: 300px;
+      display: none; /* hidden initially */
+    }
+
+    #alert-detail-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .alert-detail img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .alert-meta {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .alert-meta h3 {
+      margin-bottom: 8px;
+    }
+
+    .alert-meta p {
+      margin: 4px 0;
+      font-size: 0.95rem;
+    }
+
+    .approve-detail-btn {
+      padding: 10px 20px;
+      background-color: #2d3b24;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .approve-detail-btn:disabled {
+      background-color: #999;
+      cursor: default;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">ParkShield.</div>
+    <nav>
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Alerts</a>
+      <a href="#">Chats</a>
+      <img src="assets/profileimage.jpg" alt="User" class="profile-pic" />
+    </nav>
+  </header>
+
+  <main>
+    <!-- Left Section -->
+    <section class="left-section">
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-title">Current Detected Cases Rate</div>
+          <div class="stat-value">4.3/5</div>
+          <small>Based on Approved cases</small>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Inbound Visitors</div>
+          <div class="stat-value">7</div>
+          <small>+5.62% from last month</small>
+        </div>
+      </div>
+
+      <div class="incoming">
+        <h3>Incoming</h3>
+        <div id="alerts-container"></div>
+      </div>
+    </section>
+
+    <!-- Right Section -->
+    <section id="right-section" class="right-section">
+      <div id="alert-detail-container">
+        <div id="alert-detail" class="alert-detail">
+          <img id="detail-img" src="" alt="Animal" />
+          <div class="alert-meta">
+            <h3 id="detail-name"></h3>
+            <p><strong>Category:</strong> <span id="detail-category"></span></p>
+            <p><strong>Status:</strong> <span id="detail-status"></span></p>
+            <p><strong>Time:</strong> <span id="detail-time"></span></p>
+            <p><strong>Location:</strong> <span id="detail-location"></span></p>
+          </div>
+          <button id="approve-detail" class="approve-detail-btn">Approve</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const ALERTS_API = "http://localhost:8000/api/alerts";
+    const APPROVE_API = "http://localhost:8000/api/approve";
+
+    const alertsContainer = document.getElementById("alerts-container");
+    const rightSection = document.getElementById("right-section");
+    const detailImg = document.getElementById("detail-img");
+    const detailName = document.getElementById("detail-name");
+    const detailCategory = document.getElementById("detail-category");
+    const detailStatus = document.getElementById("detail-status");
+    const detailTime = document.getElementById("detail-time");
+    const detailLocation = document.getElementById("detail-location");
+    const approveDetailBtn = document.getElementById("approve-detail");
+
+    let currentAlert = null;
+
+    async function fetchAlerts() {
+      const res = await fetch(ALERTS_API);
+      const alerts = await res.json();
+      renderAlerts(alerts);
+    }
+
+    function renderAlerts(alerts) {
+      alertsContainer.innerHTML = "";
+      alerts.forEach(alert => {
+        if (alert.status === "Approved") return;
+        const card = document.createElement("div");
+        card.className = "alert-card";
+        card.innerHTML = `
+          <img class="alert-thumb" src="${alert.image_url}" alt="${alert.prediction}" />
+          <div class="alert-info">
+            <h4>${capitalize(alert.prediction)} Detected <span class="status-badge">${alert.status}</span></h4>
+            <p>${alert.danger_level}</p>
+          </div>
+          <div class="alert-actions">
+            <button class="approve-btn">✓</button>
+            <button class="reject-btn">✕</button>
+          </div>
+        `;
+
+        // Approve button
+        card.querySelector(".approve-btn").addEventListener("click", async (e) => {
+          e.stopPropagation();
+          await approveAlert(alert.id);
+          card.remove();
+        });
+
+        // Reject button
+        card.querySelector(".reject-btn").addEventListener("click", (e) => {
+          e.stopPropagation();
+          card.remove();
+          if(currentAlert && currentAlert.id === alert.id) {
+            rightSection.style.display = "none";
+          }
+        });
+
+        // View details
+        card.addEventListener("click", () => showAlertDetail(alert));
+        alertsContainer.appendChild(card);
+      });
+    }
+
+    function showAlertDetail(alert) {
+      currentAlert = alert;
+      detailImg.src = alert.image_url;
+      detailName.textContent = `${capitalize(alert.prediction)} Detected`;
+      detailCategory.textContent = alert.danger_level;
+      detailStatus.textContent = alert.status;
+      detailTime.textContent = new Date(alert.timestamp).toLocaleString();
+      detailLocation.textContent = alert.latitude && alert.longitude
+        ? `${alert.latitude}, ${alert.longitude}`
+        : "Unknown";
+      approveDetailBtn.disabled = alert.status === "Approved";
+
+      rightSection.style.display = "block";
+    }
+
+    async function approveAlert(id) {
+      await fetch(`${APPROVE_API}/${id}`, { method: "POST" });
+      if (currentAlert && currentAlert.id === id) {
+        currentAlert.status = "Approved";
+        detailStatus.textContent = "Approved";
+        approveDetailBtn.disabled = true;
+        rightSection.style.display = "none";
+      }
+    }
+
+    approveDetailBtn.addEventListener("click", async () => {
+      if (currentAlert) await approveAlert(currentAlert.id);
+    });
+
+    function capitalize(s) {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    // Load alerts on startup
+    fetchAlerts();
+    setInterval(fetchAlerts, 5000);
+  </script>
+</body>
+</html>
+
+
